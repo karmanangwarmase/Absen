@@ -7,135 +7,217 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 10px;
-            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
             color: #333;
         }
-        h1 {
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #3498db;
+            color: white;
             text-align: center;
-            color: #34495e;
+            padding: 15px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
-        .form-container {
-            margin-bottom: 20px;
+
+        header h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        header h2 {
+            font-size: 1rem;
+            margin: 5px 0 0;
+        }
+
+        main {
+            margin-top: 100px;
             padding: 10px;
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
+
+        .form-container {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
         label {
             font-weight: bold;
             display: block;
             margin-bottom: 5px;
         }
+
         input[type="text"], input[type="number"] {
+            width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            width: calc(100% - 22px);
+            border-radius: 5px;
             box-sizing: border-box;
         }
+
         button {
-            padding: 10px;
-            margin: 5px 0;
-            background-color: #42a5f5;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            display: block;
             width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
         }
-        button:hover {
-            background-color: #1e88e5;
+
+        .add-student-button, .add-meeting-button {
+            background-color: #f39c12;
         }
+
+        .delete-meeting-button {
+            background-color: #e74c3c;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #fff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #1976d2;
-            color: white;
-            padding: 10px;
-        }
-        td {
+
+        th, td {
             padding: 10px;
             text-align: center;
+            border-bottom: 1px solid #ddd;
         }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f2f2f2;
         }
+
         tr:hover {
-            background-color: #f1f1f1;
+            background-color: #eaf2f8;
+        }
+
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .floating-buttons button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .save-button {
+            background-color: #2ecc71;
+        }
+
+        .load-button {
+            background-color: #3498db;
+        }
+
+        .download-button {
+            background-color: #e74c3c;
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.5rem;
+            header h1 {
+                font-size: 1.2rem;
             }
-            input[type="text"], input[type="number"], button {
+
+            header h2 {
                 font-size: 0.9rem;
             }
-            th, td {
+
+            table th, table td {
                 font-size: 0.9rem;
-                padding: 5px;
             }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 </head>
 <body>
-<h1 style="margin-bottom: 0em;">SMAS MUH 1 P. Morotai</h1>
-<h1 style="font-weight: normal; margin-top: 0em; font-size: 1em;">Absen TTM sem : 2, Thn 2024/2025</h1>
+    <header>
+        <h1>SMAS Muhammadiyah 1 Pulau Morotai</h1>
+        <h2>Absen Tatap Muka Semester: 2, Thn. 2024/2025</h2>
+    </header>
 
-    <div class="form-container">
-        <label for="schoolName">Mapel:</label>
-        <input type="text" id="schoolName" placeholder="Masukkan Mapel">
+    <main>
+        <div class="form-container">
+            <div class="form-group">
+                <label for="schoolName">Mata Pelajaran:</label>
+                <input type="text" id="schoolName" placeholder="Masukkan Mata Pelajaran">
+            </div>
+            <div class="form-group">
+                <label for="className">Kelas:</label>
+                <input type="text" id="className" placeholder="Masukkan Kelas">
+            </div>
+            <div class="form-group">
+                <label for="studentName">Nama Siswa:</label>
+                <input type="text" id="studentName" placeholder="Masukkan Nama Siswa">
+                <button class="add-student-button" onclick="addStudent()">Tambah Siswa</button>
+            </div>
+            <div class="form-group">
+                <label for="customDays">Jumlah Pertemuan:</label>
+                <input type="number" id="customDays" placeholder="Masukkan Jumlah Pertemuan" min="1">
+                <button class="add-meeting-button" onclick="addMeeting()">Tambah Pertemuan</button>
+                <button class="delete-meeting-button" onclick="deleteMeeting()">Hapus Pertemuan</button>
+            </div>
+        </div>
 
-        <label for="className">Kelas:</label>
-        <input type="text" id="className" placeholder="Masukkan kelas">
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Checklist</th>
+                    <th>Persentase Kehadiran</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic Rows Here -->
+            </tbody>
+        </table>
+    </main>
 
-        <label for="studentName">Tambah Nama Siswa:</label>
-        <input type="text" id="studentName" placeholder="Masukkan nama siswa">
-        <button onclick="addStudent()">Tambah Siswa</button>
-
-        <label for="customDays">Jumlah Pertemuan:</label>
-        <input type="number" id="customDays" placeholder="Masukkan 1 setiap pertemuan" min="1" max="365">
-        <button onclick="addMeeting()">Tambah Pertemuan</button>
+    <div class="floating-buttons">
+        <button class="save-button" onclick="saveData()">💾</button>
+        <button class="load-button" onclick="loadData()">📂</button>
+        <button class="download-button" onclick="downloadPDF()">⬇️</button>
     </div>
 
-    <table id="attendanceTable">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Siswa</th>
-                <th>Checklist</th>
-                <th>Persentase Kehadiran</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Rows will be added here -->
-        </tbody>
-    </table>
-
-    <button onclick="saveData()">Simpan Data</button>
-    <button onclick="loadData()">Muat Data</button>
-    <button onclick="downloadPDF()">Download PDF</button>
-
     <script>
-        let studentCount = 0;
-        let defaultDays = 30;
+  let studentCount = 0;
         let totalDays = 0;
 
+        // Function to add student rows
         function addStudent() {
-            const studentName = document.getElementById('studentName').value;
-
+            const studentName = document.getElementById('studentName').value.trim();
             if (!studentName) {
                 alert('Masukkan nama siswa!');
                 return;
@@ -147,23 +229,33 @@
             const row = document.createElement('tr');
 
             row.innerHTML = `
-                <td>${studentCount}</td>
+                <td></td>
                 <td contenteditable="true">${studentName}</td>
-                <td id="checklist-${studentCount}"></td>
+                <td id="checklist-${studentCount}">
+                    ${Array.from({ length: totalDays }).map(() => `<input type="checkbox" onchange="updateAttendancePercentage()">`).join('')}
+                </td>
                 <td><span id="attendance-${studentCount}">0%</span></td>
-                <td><button onclick="deleteStudent(this)">Hapus</button></td>
+                <td><button class="delete-button" onclick="deleteStudent(this)">Hapus</button></td>
             `;
 
             tableBody.appendChild(row);
+            updateStudentCount();
             document.getElementById('studentName').value = '';
         }
 
+        // Function to delete student
         function deleteStudent(button) {
-            const row = button.parentElement.parentElement;
-            row.remove();
-            updateStudentCount();
+            const studentName = button.parentElement.parentElement.querySelector('td:nth-child(2)').textContent;
+            const isConfirmed = confirm(`Anda yakin menghapus nama ${studentName}?`);
+
+            if (isConfirmed) {
+                const row = button.parentElement.parentElement;
+                row.remove();
+                updateStudentCount();
+            }
         }
 
+        // Function to update student count
         function updateStudentCount() {
             studentCount = 0;
             const rows = document.querySelectorAll('#attendanceTable tbody tr');
@@ -173,199 +265,125 @@
             });
         }
 
-        function saveData() {
-            const schoolName = document.getElementById('schoolName').value;
-            const className = document.getElementById('className').value;
-
-            const attendance = [];
-            document.querySelectorAll('#attendanceTable tbody tr').forEach(row => {
-                const studentName = row.cells[1].textContent;
-                const checkboxes = row.querySelectorAll('input[type="checkbox"]');
-                const days = Array.from(checkboxes).map(checkbox => checkbox.checked);
-                attendance.push({ studentName, days });
-            });
-
-            const data = { schoolName, className, attendance, totalDays };
-            localStorage.setItem('attendanceData', JSON.stringify(data));
-            alert('Data berhasil disimpan!');
-        }
-
-        function loadData() {
-            const data = JSON.parse(localStorage.getItem('attendanceData'));
-            if (!data) {
-                alert('Tidak ada data tersimpan!');
-                return;
-            }
-
-            document.getElementById('schoolName').value = data.schoolName;
-            document.getElementById('className').value = data.className;
-            totalDays = data.totalDays;
-
-            const tableBody = document.querySelector('#attendanceTable tbody');
-            tableBody.innerHTML = '';
-
-            data.attendance.forEach((student, index) => {
-                studentCount = index + 1;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${studentCount}</td>
-                    <td contenteditable="true">${student.studentName}</td>
-                    <td id="checklist-${studentCount}"></td>
-                    <td><span id="attendance-${studentCount}">${calculateAttendancePercentage(student.days)}%</span></td>
-                    <td><button onclick="deleteStudent(this)">Hapus</button></td>
-                `;
-                tableBody.appendChild(row);
-
-                const checklistCell = document.getElementById(`checklist-${studentCount}`);
-                student.days.forEach((day, i) => {
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.checked = day;
-                    checkbox.setAttribute('data-day', i + 1);
-                    checkbox.setAttribute('onchange', 'updateAttendancePercentage()');
-                    checklistCell.appendChild(checkbox);
-                });
-            });
-
-            alert('Data berhasil dimuat!');
-        }
-
-async function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    const schoolName = document.getElementById('schoolName').value || 'Nama Sekolah';
-    const className = document.getElementById('className').value || 'Kelas';
-
-    // Get page width to center text properly
-    const pageWidth = doc.internal.pageSize.width;
-
-    // Set font for the "Slogan" (18px)
-    doc.setFontSize(18);
-    let slogan = 'SMAS Muhammadiyah 1 Pulau Morotai';
-    const sloganWidth = doc.getTextWidth(slogan);
-    doc.text(slogan, (pageWidth - sloganWidth) / 2, 30);
-
-    // Set font for the second slogan (12px)
-    doc.setFontSize(10);
-    slogan = 'Absensi tatap muka semester 2 tahun pelajaran 2024/2025';
-    const slogan2Width = doc.getTextWidth(slogan);
-    doc.text(slogan, (pageWidth - slogan2Width) / 2, 35);
-
-    // Set space before adding the "Mapel" and "Kelas"
-    let y = 50;  // Start from this point for table and labels
-
-    // Add Mapel and Kelas below the slogan
-    doc.text(`Mapel: ${schoolName}`, 10, y);
-    doc.text(`Kelas: ${className}`, 10, y + 8);
-
-    y += 18;  // Adjust this to create more space before the table starts
-
-    // Set headers for the table with blue background and white text
-    doc.setFillColor(25, 118, 210);  // Blue background for headers
-    doc.rect(10, y, 20, 10, 'F');    // No
-    doc.rect(30, y, 50, 10, 'F');    // Nama Siswa
-    doc.rect(80, y, 40, 10, 'F');    // Jumlah Kehadiran
-    doc.rect(120, y, 40, 10, 'F');   // Tatap Muka
-    doc.rect(160, y, 40, 10, 'F');   // Persentase
-
-    // Set text color to white for headers
-    doc.setTextColor(255, 255, 255);
-    doc.text('No', 15, y + 7);
-    doc.text('Nama Siswa', 35, y + 7);
-    doc.text('Jumlah Kehadiran', 85, y + 7);
-    doc.text('Tatap Muka', 125, y + 7);
-    doc.text('Persentase', 165, y + 7);
-
-    y += 12; // Adjust to give some space below the header for rows
-
-    // Set a smaller border thickness for row separation (optional)
-    doc.setLineWidth(0.3);
-
-    // Loop through each student to create a row in the table
-    let no = 1;
-    document.querySelectorAll('#attendanceTable tbody tr').forEach((row, index) => {
-        const studentName = row.cells[1].textContent;
-        const checkboxes = row.querySelectorAll('input[type="checkbox"]');
-        const totalChecks = checkboxes.length;
-        const checkedChecks = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
-        const percentage = (checkedChecks / totalChecks) * 100;
-
-        // Set alternating row colors (light gray and white)
-        const rowColor = index % 2 === 0 ? [242, 242, 242] : [255, 255, 255];
-        doc.setFillColor(...rowColor);
-
-        // Automatically calculate the column widths based on the content
-        const noWidth = doc.getTextWidth(no.toString()) + 5;
-        const nameWidth = doc.getTextWidth(studentName) + 10;
-        const attendanceWidth = doc.getTextWidth(checkedChecks.toString()) + 10;
-        const totalMeetingsWidth = doc.getTextWidth(totalChecks.toString()) + 10;
-        const percentageWidth = doc.getTextWidth(percentage.toFixed(2) + '%') + 10;
-
-        const colWidths = [noWidth, nameWidth, attendanceWidth, totalMeetingsWidth, percentageWidth];
-
-        // Draw the cells with dynamic widths and no border
-        doc.rect(10, y, colWidths[0], 10, 'F');    // No
-        doc.rect(10 + colWidths[0], y, colWidths[1], 10, 'F');    // Nama Siswa
-        doc.rect(10 + colWidths[0] + colWidths[1], y, colWidths[2], 10, 'F');    // Jumlah Kehadiran
-        doc.rect(10 + colWidths[0] + colWidths[1] + colWidths[2], y, colWidths[3], 10, 'F');   // Tatap Muka
-        doc.rect(10 + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3], y, colWidths[4], 10, 'F');   // Persentase
-
-        // Set text color to black for rows
-        doc.setTextColor(0, 0, 0);
-        doc.text(no.toString(), 15, y + 7);
-        doc.text(studentName, 35, y + 7);
-        doc.text(checkedChecks.toString(), 85, y + 7); // Attendance count
-        doc.text(totalChecks.toString(), 125, y + 7); // Total meetings
-        doc.text(`${percentage.toFixed(2)}%`, 165, y + 7); // Attendance percentage
-
-        y += 12;
-        no++;
-    });
-
-    // Save the PDF with the name 'Absensi.pdf'
-    doc.save('Absensi.pdf');
-}
-
-
-        // Function to add a new meeting (checkbox) for all students
+        // Function to add meeting days
         function addMeeting() {
+            const days = parseInt(document.getElementById('customDays').value) || 1;
+            totalDays += days;
+
             const rows = document.querySelectorAll('#attendanceTable tbody tr');
-            const customDaysInput = document.getElementById('customDays').value;
-            const newDays = parseInt(customDaysInput) || defaultDays;
-
-            totalDays = newDays;  // Update the total days for the current session
-
             rows.forEach(row => {
                 const checklistCell = row.querySelector('td:nth-child(3)');
-                for (let i = 0; i < newDays; i++) {
-                    const newCheckbox = document.createElement('input');
-                    newCheckbox.type = 'checkbox';
-                    newCheckbox.setAttribute('data-day', i + 1);
-                    newCheckbox.setAttribute('onchange', 'updateAttendancePercentage()');
-                    checklistCell.appendChild(newCheckbox);
+                for (let i = 0; i < days; i++) {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.onchange = updateAttendancePercentage;
+                    checklistCell.appendChild(checkbox);
                 }
             });
         }
 
-        // Function to calculate and update attendance percentage
+        // Function to delete meeting days (remove last added checkboxes)
+        function deleteMeeting() {
+            if (totalDays <= 0) return;
+
+            const rows = document.querySelectorAll('#attendanceTable tbody tr');
+            rows.forEach(row => {
+                const checklistCell = row.querySelector('td:nth-child(3)');
+                const checkboxes = checklistCell.querySelectorAll('input[type="checkbox"]');
+                checkboxes[checkboxes.length - 1].remove();
+            });
+
+            totalDays--;
+        }
+
+        // Function to update attendance percentage
         function updateAttendancePercentage() {
             document.querySelectorAll('#attendanceTable tbody tr').forEach(row => {
                 const checkboxes = row.querySelectorAll('input[type="checkbox"]');
-                const totalChecks = checkboxes.length;
-                const checkedChecks = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
-                const percentage = (checkedChecks / totalChecks) * 100;
-                const studentId = row.cells[0].textContent;
-                document.getElementById(`attendance-${studentId}`).textContent = `${percentage.toFixed(2)}%`;
+                const checked = Array.from(checkboxes).filter(chk => chk.checked).length;
+                const percentage = totalDays > 0 ? (checked / totalDays) * 100 : 0;
+
+                row.querySelector('span').textContent = `${percentage.toFixed(2)}%`;
             });
         }
 
-        // Calculate attendance percentage for loaded data
-        function calculateAttendancePercentage(days) {
-            const totalDays = days.length;
-            const presentDays = days.filter(day => day).length;
-            return (presentDays / totalDays) * 100;
+        // Function to save data
+        function saveData() {
+            const subject = document.getElementById('schoolName').value.trim();
+            const className = document.getElementById('className').value.trim();
+
+            if (!subject || !className) {
+                alert('Masukkan mata pelajaran dan kelas!');
+                return;
+            }
+
+            const students = [];
+            const rows = document.querySelectorAll('#attendanceTable tbody tr');
+
+            rows.forEach((row, index) => {
+                const studentName = row.cells[1].textContent;
+                const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+                const attendance = Array.from(checkboxes).filter(chk => chk.checked).length;
+
+                students.push({
+                    name: studentName,
+                    attendance: attendance,
+                    checkboxes: Array.from(checkboxes).map(checkbox => checkbox.checked)
+                });
+            });
+
+            const data = {
+                subject: subject,
+                className: className,
+                students: students,
+                totalDays: totalDays
+            };
+
+            localStorage.setItem('attendanceData', JSON.stringify(data));
+            alert('Data berhasil disimpan!');
+        }
+
+        // Function to load data
+        function loadData() {
+            const data = localStorage.getItem('attendanceData');
+            if (!data) {
+                alert('Tidak ada data yang disimpan!');
+                return;
+            }
+
+            const parsedData = JSON.parse(data);
+            totalDays = parsedData.totalDays;
+
+            document.getElementById('schoolName').value = parsedData.subject;
+            document.getElementById('className').value = parsedData.className;
+
+            const tableBody = document.querySelector('#attendanceTable tbody');
+            tableBody.innerHTML = '';
+
+            parsedData.students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td contenteditable="true">${student.name}</td>
+                    <td id="checklist-${index + 1}">
+                        ${Array.from({ length: totalDays }).map((_, i) => {
+                            const checked = student.checkboxes[i] ? 'checked' : '';
+                            return `<input type="checkbox" ${checked} onchange="updateAttendancePercentage()">`;
+                        }).join('')}
+                    </td>
+                    <td><span id="attendance-${index + 1}">${(student.attendance / totalDays * 100).toFixed(2)}%</span></td>
+                    <td><button class="delete-button" onclick="deleteStudent(this)">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            updateStudentCount();
+            alert('Data berhasil dimuat!');
+        }
+
+        // Placeholder function for downloading PDF
+        function downloadPDF() {
+            // Add PDF generation logic here if necessary
         }
     </script>
 </body>
