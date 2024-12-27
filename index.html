@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Guru Mapel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #34495e;
+        }
+        .form-container {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #42a5f5;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #1e88e5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #1976d2;
+            color: white;
+            padding: 10px;
+        }
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            input[type="text"], input[type="number"], button {
+                font-size: 0.9rem;
+            }
+            th, td {
+                font-size: 0.9rem;
+                padding: 5px;
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+</head>
+<body>
+<h1 style="margin-bottom: 0em;">SMAS MUH 1 P. Morotai</h1>
+<h1 style="font-weight: normal; margin-top: 0em; font-size: 1em;">Absen TTM sem : 2, Thn 2024/2025</h1>
+
+    <div class="form-container">
+        <label for="schoolName">Mapel:</label>
+        <input type="text" id="schoolName" placeholder="Masukkan Mapel">
+
+        <label for="className">Kelas:</label>
+        <input type="text" id="className" placeholder="Masukkan kelas">
+
+        <label for="studentName">Tambah Nama Siswa:</label>
+        <input type="text" id="studentName" placeholder="Masukkan nama siswa">
+        <button onclick="addStudent()">Tambah Siswa</button>
+
+        <label for="customDays">Jumlah Pertemuan:</label>
+        <input type="number" id="customDays" placeholder="Masukkan 1 setiap pertemuan" min="1" max="365">
+        <button onclick="addMeeting()">Tambah Pertemuan</button>
+    </div>
+
+    <table id="attendanceTable">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Siswa</th>
+                <th>Checklist</th>
+                <th>Persentase Kehadiran</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added here -->
+        </tbody>
+    </table>
+
+    <button onclick="saveData()">Simpan Data</button>
+    <button onclick="loadData()">Muat Data</button>
+    <button onclick="downloadPDF()">Download PDF</button>
+
+    <script>
+        let studentCount = 0;
+        let defaultDays = 30;
+        let totalDays = 0;
+
+        function addStudent() {
+            const studentName = document.getElementById('studentName').value;
+
+            if (!studentName) {
+                alert('Masukkan nama siswa!');
+                return;
+            }
+
+            studentCount++;
+
+            const tableBody = document.querySelector('#attendanceTable tbody');
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td>${studentCount}</td>
+                <td contenteditable="true">${studentName}</td>
+                <td id="checklist-${studentCount}"></td>
+                <td><span id="attendance-${studentCount}">0%</span></td>
+                <td><button onclick="deleteStudent(this)">Hapus</button></td>
+            `;
+
+            tableBody.appendChild(row);
+            document.getElementById('studentName').value = '';
+        }
+
+        function deleteStudent(button) {
+            const row = button.parentElement.parentElement;
+            row.remove();
+            updateStudentCount();
+        }
+
+        function updateStudentCount() {
+            studentCount = 0;
+            const rows = document.querySelectorAll('#attendanceTable tbody tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+                studentCount++;
+            });
+        }
+
+        function saveData() {
+            const schoolName = document.getElementById('schoolName').value;
+            const className = document.getElementById('className').value;
+
+            const attendance = [];
+            document.querySelectorAll('#attendanceTable tbody tr').forEach(row => {
+                const studentName = row.cells[1].textContent;
+                const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+                const days = Array.from(checkboxes).map(checkbox => checkbox.checked);
+                attendance.push({ studentName, days });
+            });
+
+            const data = { schoolName, className, attendance, totalDays };
+            localStorage.setItem('attendanceData', JSON.stringify(data));
+            alert('Data berhasil disimpan!');
+        }
+
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('attendanceData'));
+            if (!data) {
+                alert('Tidak ada data tersimpan!');
+                return;
+            }
+
+            document.getElementById('schoolName').value = data.schoolName;
+            document.getElementById('className').value = data.className;
+            totalDays = data.totalDays;
+
+            const tableBody = document.querySelector('#attendanceTable tbody');
+            tableBody.innerHTML = '';
+
+            data.attendance.forEach((student, index) => {
+                studentCount = index + 1;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${studentCount}</td>
+                    <td contenteditable="true">${student.studentName}</td>
+                    <td id="checklist-${studentCount}"></td>
+                    <td><span id="attendance-${studentCount}">${calculateAttendancePercentage(student.days)}%</span></td>
+                    <td><button onclick="deleteStudent(this)">Hapus</button></td>
+                `;
+                tableBody.appendChild(row);
+
+                const checklistCell = document.getElementById(`checklist-${studentCount}`);
+                student.days.forEach((day, i) => {
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = day;
+                    checkbox.setAttribute('data-day', i + 1);
+                    checkbox.setAttribute('onchange', 'updateAttendancePercentage()');
+                    checklistCell.appendChild(checkbox);
+                });
+            });
+
+            alert('Data berhasil dimuat!');
+        }
+
+async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const schoolName = document.getElementById('schoolName').value || 'Nama Sekolah';
+    const className = document.getElementById('className').value || 'Kelas';
+
+    // Get page width to center text properly
+    const pageWidth = doc.internal.pageSize.width;
+
+    // Set font for the "Slogan" (18px)
+    doc.setFontSize(18);
+    let slogan = 'SMAS Muhammadiyah 1 Pulau Morotai';
+    const sloganWidth = doc.getTextWidth(slogan);
+    doc.text(slogan, (pageWidth - sloganWidth) / 2, 30);
+
+    // Set font for the second slogan (12px)
+    doc.setFontSize(10);
+    slogan = 'Absensi tatap muka semester 2 tahun pelajaran 2024/2025';
+    const slogan2Width = doc.getTextWidth(slogan);
+    doc.text(slogan, (pageWidth - slogan2Width) / 2, 35);
+
+    // Set space before adding the "Mapel" and "Kelas"
+    let y = 50;  // Start from this point for table and labels
+
+    // Add Mapel and Kelas below the slogan
+    doc.text(`Mapel: ${schoolName}`, 10, y);
+    doc.text(`Kelas: ${className}`, 10, y + 8);
+
+    y += 18;  // Adjust this to create more space before the table starts
+
+    // Set headers for the table with blue background and white text
+    doc.setFillColor(25, 118, 210);  // Blue background for headers
+    doc.rect(10, y, 20, 10, 'F');    // No
+    doc.rect(30, y, 50, 10, 'F');    // Nama Siswa
+    doc.rect(80, y, 40, 10, 'F');    // Jumlah Kehadiran
+    doc.rect(120, y, 40, 10, 'F');   // Tatap Muka
+    doc.rect(160, y, 40, 10, 'F');   // Persentase
+
+    // Set text color to white for headers
+    doc.setTextColor(255, 255, 255);
+    doc.text('No', 15, y + 7);
+    doc.text('Nama Siswa', 35, y + 7);
+    doc.text('Jumlah Kehadiran', 85, y + 7);
+    doc.text('Tatap Muka', 125, y + 7);
+    doc.text('Persentase', 165, y + 7);
+
+    y += 12; // Adjust to give some space below the header for rows
+
+    // Set a smaller border thickness for row separation (optional)
+    doc.setLineWidth(0.3);
+
+    // Loop through each student to create a row in the table
+    let no = 1;
+    document.querySelectorAll('#attendanceTable tbody tr').forEach((row, index) => {
+        const studentName = row.cells[1].textContent;
+        const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+        const totalChecks = checkboxes.length;
+        const checkedChecks = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+        const percentage = (checkedChecks / totalChecks) * 100;
+
+        // Set alternating row colors (light gray and white)
+        const rowColor = index % 2 === 0 ? [242, 242, 242] : [255, 255, 255];
+        doc.setFillColor(...rowColor);
+
+        // Automatically calculate the column widths based on the content
+        const noWidth = doc.getTextWidth(no.toString()) + 5;
+        const nameWidth = doc.getTextWidth(studentName) + 10;
+        const attendanceWidth = doc.getTextWidth(checkedChecks.toString()) + 10;
+        const totalMeetingsWidth = doc.getTextWidth(totalChecks.toString()) + 10;
+        const percentageWidth = doc.getTextWidth(percentage.toFixed(2) + '%') + 10;
+
+        const colWidths = [noWidth, nameWidth, attendanceWidth, totalMeetingsWidth, percentageWidth];
+
+        // Draw the cells with dynamic widths and no border
+        doc.rect(10, y, colWidths[0], 10, 'F');    // No
+        doc.rect(10 + colWidths[0], y, colWidths[1], 10, 'F');    // Nama Siswa
+        doc.rect(10 + colWidths[0] + colWidths[1], y, colWidths[2], 10, 'F');    // Jumlah Kehadiran
+        doc.rect(10 + colWidths[0] + colWidths[1] + colWidths[2], y, colWidths[3], 10, 'F');   // Tatap Muka
+        doc.rect(10 + colWidths[0] + colWidths[1] + colWidths[2] + colWidths[3], y, colWidths[4], 10, 'F');   // Persentase
+
+        // Set text color to black for rows
+        doc.setTextColor(0, 0, 0);
+        doc.text(no.toString(), 15, y + 7);
+        doc.text(studentName, 35, y + 7);
+        doc.text(checkedChecks.toString(), 85, y + 7); // Attendance count
+        doc.text(totalChecks.toString(), 125, y + 7); // Total meetings
+        doc.text(`${percentage.toFixed(2)}%`, 165, y + 7); // Attendance percentage
+
+        y += 12;
+        no++;
+    });
+
+    // Save the PDF with the name 'Absensi.pdf'
+    doc.save('Absensi.pdf');
+}
+
+
+        // Function to add a new meeting (checkbox) for all students
+        function addMeeting() {
+            const rows = document.querySelectorAll('#attendanceTable tbody tr');
+            const customDaysInput = document.getElementById('customDays').value;
+            const newDays = parseInt(customDaysInput) || defaultDays;
+
+            totalDays = newDays;  // Update the total days for the current session
+
+            rows.forEach(row => {
+                const checklistCell = row.querySelector('td:nth-child(3)');
+                for (let i = 0; i < newDays; i++) {
+                    const newCheckbox = document.createElement('input');
+                    newCheckbox.type = 'checkbox';
+                    newCheckbox.setAttribute('data-day', i + 1);
+                    newCheckbox.setAttribute('onchange', 'updateAttendancePercentage()');
+                    checklistCell.appendChild(newCheckbox);
+                }
+            });
+        }
+
+        // Function to calculate and update attendance percentage
+        function updateAttendancePercentage() {
+            document.querySelectorAll('#attendanceTable tbody tr').forEach(row => {
+                const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+                const totalChecks = checkboxes.length;
+                const checkedChecks = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+                const percentage = (checkedChecks / totalChecks) * 100;
+                const studentId = row.cells[0].textContent;
+                document.getElementById(`attendance-${studentId}`).textContent = `${percentage.toFixed(2)}%`;
+            });
+        }
+
+        // Calculate attendance percentage for loaded data
+        function calculateAttendancePercentage(days) {
+            const totalDays = days.length;
+            const presentDays = days.filter(day => day).length;
+            return (presentDays / totalDays) * 100;
+        }
+    </script>
+</body>
+</html>
